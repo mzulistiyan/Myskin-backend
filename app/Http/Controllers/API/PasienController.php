@@ -91,7 +91,7 @@ class PasienController extends Controller
             return ResponseFormatter::success([
                 'token_type' => 'Bearer',
                 'pasien' => $pasien
-            ]);
+            ],'Registrasi Success');
         } catch (Exception $error) {
             return ResponseFormatter::error([
                 'message' => 'Something went wrong',
@@ -120,5 +120,33 @@ class PasienController extends Controller
         $user->update($data);
 
         return ResponseFormatter::success($user, 'Profile Updated');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            // Validasi input
+            'old_password' => 'required',
+            'password' => 'required',
+            'confirmation_password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $user = $request->user();
+        if (Hash::check($request->old_password, $user->password)) {
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+            return ResponseFormatter::success([
+                'message' => 'Password berhasil diubah'
+            ],'Password berhasil diubah');
+
+        } else{
+            return ResponseFormatter::error([
+                'message' => 'Password lama tidak sesuai'
+            ],'Password lama tidak sesuai');
+        }
     }
 }

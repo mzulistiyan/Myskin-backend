@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get/pasien', [PasienController::class, 'fetchPasien']);
     Route::post('update/pasien', [PasienController::class, 'updateProfile']);
     Route::post('logout', [PasienController::class, 'logout']);
+    Route::post('pasien/change-password', [PasienController::class, 'changePassword']);
+
 
 });
 Route::post('login', [PasienController::class, 'login']);
