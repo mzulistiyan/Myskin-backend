@@ -17,6 +17,7 @@ class Dokters extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $primaryKey = 'id_dokter';
     protected $fillable = [
         'nama_dokter',
         'email',

@@ -87,6 +87,7 @@ class PasienController extends Controller
             ]);
 
             $pasien = Pasiens::where('email', $request->email)->first();
+            
 
             return ResponseFormatter::success([
                 'token_type' => 'Bearer',

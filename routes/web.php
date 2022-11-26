@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+// Midtrans related
+Route::get('midtrans/success', [TransactionController::class, 'success']);
+Route::get('midtrans/unfinish', [TransactionController::class, 'unfinish']);
+Route::get('midtrans/error', [TransactionController::class, 'error']);

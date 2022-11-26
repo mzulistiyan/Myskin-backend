@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\API\DokterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\DokterController;
 use App\Http\Controllers\API\PasienController;
+use App\Http\Controllers\API\TransactionController;
 
 
 /*
@@ -25,12 +26,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('pasien/change-password', [PasienController::class, 'changePassword']);
 
     //Dokter
-    Route::get('get/dokter', [DokterController::class, 'getAllDokter']);
+    Route::get('get/all/dokter', [DokterController::class, 'getAllDokter']);
+    Route::get('get/dokter', [DokterController::class, 'fetchDokter']);
+    Route::post('update/dokter', [DokterController::class, 'updateDokter']);
+    Route::post('logout/dokter', [DokterController::class, 'logoutDokter']);
+    Route::post('dokter/change-password', [DokterController::class, 'changePasswordDokter']);
 
+    Route::post('checkout', [TransactionController::class, 'checkout']);
+
+    Route::get('transaction', [TransactionController::class, 'all']);
+    Route::post('transaction/{id}', [TransactionController::class, 'update']);
    
 });
 Route::post('login', [PasienController::class, 'login']);
 Route::post('register', [PasienController::class, 'register']);
+
+Route::post('midtrans/callback', [TransactionController::class, 'callback']);
+
 
 //Dokter
 Route::post('login/dokter', [DokterController::class, 'loginDokter']);

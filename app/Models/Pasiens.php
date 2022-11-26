@@ -17,6 +17,7 @@ class Pasiens extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $primaryKey = 'id_pasien';
     protected $fillable = [
         'nama_pasien',
         'jenis_kelamin',
