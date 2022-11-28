@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Transaction extends Model
+class Consults extends Model
 {
     use HasFactory, softDeletes;
 
     protected $fillable = [
-        'id_pasien', 'id_dokter','total_bayar', 'status_bayar', 'payment_url','diagnosa_sementara','created_at'
+        'id_pasien',
+        'id_dokter',
+        'id_transaksi',
+        'diagnosa_lanjut',
+        'diagnosa_sementara',
+        'status_konsultasi'
     ];
 
     public function pasien()
@@ -24,6 +29,11 @@ class Transaction extends Model
     public function dokter()
     {
         return $this->hasOne(Dokters::class, 'id_dokter', 'id_dokter');
+    }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaction::class, 'id', 'id_transaksi');
     }
 
     public function getCreateAtAttribute($value)

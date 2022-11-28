@@ -10,42 +10,45 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Models\Consults;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
     public function all(Request $request)
     {
-        $id = $request->input('id');
-        $limit = $request->input('limit', 6);
-        $id_dokter = $request->input('id_dokter');
-        $status = $request->input('status');
-        if ($id) {
-            $transaction = Transaction::with(['pasien', 'dokter'])->find($id);
+        // $id = $request->input('id');
+        // $limit = $request->input('limit', 6);
+        // $id_dokter = $request->input('id_dokter');
+        // $status = $request->input('status');
+        // if ($id) {
+        //     $transaction = Transaction::with(['dokter', 'pasien'])->find($id);
 
-            if ($transaction) {
-                return ResponseFormatter::success(
-                    $transaction,
-                    'Data Transaksi berhasi diambil'
-                );
-            } else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data Transaksi tidak ditemukan',
-                    404
-                );
-            }
-        }
+        //     if ($transaction) {
+        //         return ResponseFormatter::success(
+        //             $transaction,
+        //             'Data Transaksi berhasi diambil'
+        //         );
+        //     } else {
+        //         return ResponseFormatter::error(
+        //             null,
+        //             'Data Transaksi tidak ditemukan',
+        //             404
+        //         );
+        //     }
+        // }
 
-        $transaction = Transaction::with(['dokter', 'pasien'])->where('id_pasien', Auth::user()->id_pasien);
+        $transaction = Transaction::with(['dokter', 'pasien'])
+        ->where('id_pasien', Auth::user()->id_pasien);
+                
 
-        if ($id_dokter) {
-            $transaction->where('id_dokter', $id_dokter);
-        }
+        // if ($id_dokter) {
+        //     $transaction->where('id_dokter', $id_dokter);
+        // }
 
-        if ($status) {
-            $transaction->where('status_bayar', $status);
-        }
+        // if ($status) {
+        //     $transaction->where('status_bayar', $status);
+        // }
 
         return ResponseFormatter::success(
             $transaction->get(),
@@ -137,21 +140,28 @@ class TransactionController extends Controller
         if ($status == 'capture') {
             if ($type == 'credit_card') {
                 if ($fraud == 'challenge') {
-                    $transaction->status = 'PENDING';
+                    $transaction->status_bayar = 'PENDING';
                 } else {
-                    $transaction->status = 'SUCCESS';
+                    $transaction->status_bayar = 'SUCCESS';
                 }
             }
         } elseif ($status == 'settlement') {
-            $transaction->status = 'SUCCESS';
+            $transaction->status_bayar = 'SUCCESS';
+            Consults::create([
+                'id_pasien' => $transaction->id_pasien,
+                'id_dokter' => $transaction->id_dokter,
+                'id_transaksi' => $order_id,
+                'status_konsultasi' => "PENDING",
+                'diagnosa_sementara' => $transaction->diagnosa_sementara,
+            ]);
         } elseif ($status == 'pending') {
-            $transaction->status = 'PENDING';
+            $transaction->status_bayar = 'PENDING';
         } elseif ($status == 'deny') {
-            $transaction->status = 'CANCELLED';
+            $transaction->status_bayar = 'CANCELLED';
         } elseif ($status == 'expire') {
-            $transaction->status = 'CANCELLED';
+            $transaction->status_bayar = 'CANCELLED';
         } elseif ($status == 'cancel') {
-            $transaction->status = 'CANCELLED';
+            $transaction->status_bayar = 'CANCELLED';
         }
 
         // Proses simpan Transaksi
