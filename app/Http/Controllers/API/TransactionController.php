@@ -17,39 +17,10 @@ class TransactionController extends Controller
 {
     public function all(Request $request)
     {
-        // $id = $request->input('id');
-        // $limit = $request->input('limit', 6);
-        // $id_dokter = $request->input('id_dokter');
-        // $status = $request->input('status');
-        // if ($id) {
-        //     $transaction = Transaction::with(['dokter', 'pasien'])->find($id);
-
-        //     if ($transaction) {
-        //         return ResponseFormatter::success(
-        //             $transaction,
-        //             'Data Transaksi berhasi diambil'
-        //         );
-        //     } else {
-        //         return ResponseFormatter::error(
-        //             null,
-        //             'Data Transaksi tidak ditemukan',
-        //             404
-        //         );
-        //     }
-        // }
-
+        
         $transaction = Transaction::with(['dokter', 'pasien'])
         ->where('id_pasien', Auth::user()->id_pasien);
-                
-
-        // if ($id_dokter) {
-        //     $transaction->where('id_dokter', $id_dokter);
-        // }
-
-        // if ($status) {
-        //     $transaction->where('status_bayar', $status);
-        // }
-
+        
         return ResponseFormatter::success(
             $transaction->get(),
             'Data list transaksi berhasil diambil'
