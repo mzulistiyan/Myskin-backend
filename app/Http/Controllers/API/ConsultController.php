@@ -27,6 +27,8 @@ class ConsultController extends Controller
         }
     }
 
+   
+
     public function consultasiDokter(Request $request)
     {
         try {
@@ -50,4 +52,6 @@ class ConsultController extends Controller
 
         return ResponseFormatter::success($consults, 'Transaksi berhasil diperbarui');
     }
+
+    
 }

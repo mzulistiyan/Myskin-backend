@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Exception;
 use App\Models\Pasiens;
+use App\Models\TesKesehatans;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
@@ -58,6 +59,48 @@ class PasienController extends Controller
                 'message' => 'Something went wrong',
                 'error' => $error
             ], 'Authenticated Failed', 500);
+        }
+    }
+
+    public function tesKesehatanKulit(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'diagnosa_sementara' => ['required', 'string', 'max:255'],
+                
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+            $id = Auth::user()->id_pasien;
+            TesKesehatans::create([
+                'id_pasien' => $id,
+                'diagnosa_sementara' => $request->diagnosa_sementara,
+            ]);
+
+            return ResponseFormatter::success([
+            ],'Tes Kesehatan Success');
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $error
+            ], 'Authentication Failed', 500);
+        }
+    }
+
+    public function getTesKesehatanKulit(Request $request)
+    {
+        try {
+            $consult = TesKesehatans::with(['pasien'])
+            ->where('id_pasien', Auth::user()->id_pasien);
+
+            return ResponseFormatter::success(
+                $consult->get(),
+                'Data list konsultasi berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error($error->getMessage(), 'Data list konsultasi Gagal');
         }
     }
 
