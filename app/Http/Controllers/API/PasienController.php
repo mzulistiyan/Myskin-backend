@@ -16,24 +16,22 @@ use App\Actions\Fortify\PasswordValidationRules;
 class PasienController extends Controller
 {
 
-
     use PasswordValidationRules;
 
-    
-    public function login(Request $request)
+    public function loginPasien(Request $request)
     {
         try {
+            //Memvalidasi Email Password Benar Atau Tidak
             $validator = Validator::make($request->all(), [
-                // Validasi input
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
-
+            //Jika Validator False, Akan memunculkan Response error dengan code 400
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
             }
 
-            // Cek credentials
+            // Mengecek credentials
             $credentials = request(['email', 'password']);
             if (!Auth::attempt($credentials)) {
                 return ResponseFormatter::error([
@@ -47,7 +45,10 @@ class PasienController extends Controller
                 throw new \Exception('Invalid Credentials');
             }
 
+            //Create Token Untuk Login
             $tokenResult = $pasien->createToken('authToken')->plainTextToken;
+
+            //Jika berjasil maka akan beri response JSON yang akan diconsume oleh frontend
             return ResponseFormatter::success([
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
@@ -105,7 +106,7 @@ class PasienController extends Controller
     }
 
 
-    public function register(Request $request)
+    public function registerPasien(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -144,19 +145,19 @@ class PasienController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    public function logoutPasien(Request $request)
     {
         $token = $request->user()->currentAccessToken()->delete();
 
         return ResponseFormatter::success($token, 'Token Revoked');
     }
 
-    public function fetchPasien(Request $request)
+    public function getDataPasien(Request $request)
     {
         return ResponseFormatter::success($request->user(), 'Data Profile user berhasil diambil');
     }
 
-    public function updateProfile(Request $request)
+    public function updatePasien(Request $request)
     {
         $data = $request->all();
 
@@ -166,7 +167,7 @@ class PasienController extends Controller
         return ResponseFormatter::success($user, 'Profile Updated');
     }
 
-    public function changePassword(Request $request)
+    public function gantiPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
             // Validasi input

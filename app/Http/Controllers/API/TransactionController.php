@@ -15,19 +15,16 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    public function all(Request $request)
+    public function getDataAllTransaksi(Request $request)
     {
-        
-        $transaction = Transaction::with(['dokter', 'pasien'])
-        ->where('id_pasien', Auth::user()->id_pasien);
-        
+        $transaction = Transaction::with(['dokter', 'pasien'])->where('id_pasien', Auth::user()->id_pasien);
         return ResponseFormatter::success(
             $transaction->get(),
             'Data list transaksi berhasil diambil'
         );
     }
 
-    public function update(Request $request, $id)
+    public function updateTransaksi(Request $request, $id)
     {
         $transaction = Transaction::findOrFail($id);
 

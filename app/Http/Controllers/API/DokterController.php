@@ -129,7 +129,7 @@ class DokterController extends Controller
         return ResponseFormatter::success($token, 'Token Revoked');
     }
 
-    public function fetchDokter(Request $request)
+    public function getDokter(Request $request)
     {
         return ResponseFormatter::success($request->user(), 'Data Profile user berhasil diambil');
     }
