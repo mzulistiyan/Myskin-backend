@@ -154,7 +154,14 @@ class PasienController extends Controller
 
     public function getDataPasien(Request $request)
     {
-        return ResponseFormatter::success($request->user(), 'Data Profile user berhasil diambil');
+        
+        try {
+            return ResponseFormatter::success($request->user(), 'Data Profile user berhasil diambil');
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $error
+            ], 'Get Data Pasien Failed', 500);        }
     }
 
     public function updatePasien(Request $request)
