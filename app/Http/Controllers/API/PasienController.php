@@ -154,14 +154,7 @@ class PasienController extends Controller
 
     public function getDataPasien(Request $request)
     {
-        
-        try {
-            return ResponseFormatter::success($request->user(), 'Data Profile user berhasil diambil');
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                'message' => 'Something went wrong',
-                'error' => $error
-            ], 'Get Data Pasien Failed', 500);        }
+        return ResponseFormatter::success($request->user(), 'Data Profile user berhasil diambil');
     }
 
     public function updatePasien(Request $request)
@@ -182,18 +175,22 @@ class PasienController extends Controller
             'password' => 'required',
             'confirmation_password' => 'required'
         ]);
-
+        //ini kalo
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+
+        //Create Password Baru
         $user = $request->user();
         if (Hash::check($request->old_password, $user->password)) {
             $user->update([
                 'password' => Hash::make($request->password)
-            ]);
-            return ResponseFormatter::success([
-                'message' => 'Password berhasil diubah'
-            ],'Password berhasil diubah');
+        ]);
+        
+        //Jika Berhasil akan menampilkan response success
+        return ResponseFormatter::success([
+            'message' => 'Password berhasil diubah'
+        ],'Password berhasil diubah');
 
         } else{
             return ResponseFormatter::error([
