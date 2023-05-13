@@ -16,8 +16,8 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>ID User</th>
-                                    <th>ID Dokter</th>
+                                    <th>Nama Pasien</th>
+                                    <th>Nama Dokter</th>
                                     <th>Diagnosa Sementara</th>
                                     <th>Tanggal Transaksi</th>
                                     <th>Status Transaksi</th>
@@ -27,12 +27,12 @@
                                 @foreach ($data as $forum)
                                 <tr>
                                     <td>{{$forum->id}}</td>
-                                    <td>{{$forum->pasien->id_pasien}}</td>
+                                    <td>{{$forum->pasien->nama_pasien}}</td>
 
                                         @if(empty($forum->dokter->id_dokter))
                                         <td><a type="button" class="btn btn-info" href="{{ route('detail.transaksi',$forum->id) }}">Pilihkan Dokter</a></td>
                                         @else
-                                        <td>{{$forum->dokter->id_dokter}}</td>
+                                        <td>{{$forum->dokter->nama_dokter}}</td>
                                         @endif
 
                                     <td>{{$forum->diagnosa_sementara}}</td>
@@ -49,8 +49,8 @@
                             <tfoot>
                                 <tr>
                                     <th>ID</th>
-                                    <th>ID User</th>
-                                    <th>ID Dokter</th>
+                                    <th>Nama Pasien</th>
+                                    <th>Nama Dokter</th>
                                     <th>Diagnosa Sementara</th>
                                     <th>Tanggal Transaksi</th>
                                     <th>Status Transaksi</th>
@@ -113,10 +113,6 @@
                                                         <div class="row">
                                                         
                                                         </div>
-
-                                                        
-                                                       
-
                                                         <input name="id_forum" type="hidden" value="" disp>
                                                     </div>
                                                     <button type="submit" id="btnSave" class="btn btn-primary ">Submit</button>

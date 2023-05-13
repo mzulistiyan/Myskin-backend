@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Consults;
+use App\Models\RekamMedis;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
@@ -11,11 +12,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ConsultController extends Controller
 {
-    public function consultasiPasien(Request $request)
+    public function getConsultasiPasien(Request $request)
     {
         try {
-            $consult = Consults::with(['dokter', 'pasien','transaksi'])
-            ->where('id_pasien', Auth::user()->id_pasien)
+            $consult = Consults::with(['transaksi.dokter','transaksi.pasien'])
+            ->whereRelation('transaksi.pasien', 'id_pasien', Auth::user()->id_pasien)
             ->Where('status_konsultasi', '!=' , 'PENDING');
 
             return ResponseFormatter::success(
@@ -29,11 +30,12 @@ class ConsultController extends Controller
 
    
 
-    public function consultasiDokter(Request $request)
+    public function getConsultasiDokter(Request $request)
     {
         try {
-            $consult = Consults::with(['dokter', 'pasien','transaksi'])
-            ->where('id_dokter', Auth::user()->id_dokter);
+            $consult = Consults::with(['transaksi.dokter','transaksi.pasien'])
+            ->whereRelation('transaksi.dokter', 'id_dokter', 1)->Where('status_konsultasi', '!=' , 'SELESAI');
+            
 
             return ResponseFormatter::success(
                 $consult->get(),
@@ -44,12 +46,28 @@ class ConsultController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function getRekamMedis(Request $request)
+    {
+        try {
+
+            $rekamMedis = RekamMedis::with(['konsultasi'])
+            ->whereRelation('konsultasi', 'id_pasien', Auth::user()->id_pasien)
+            ->get();
+
+            return $rekamMedis;
+        } catch (Exception $error) {
+            return ResponseFormatter::error($error->getMessage(), 'Data list konsultasi Gagal');
+        }
+    }
+
+    public function updateKonsultasi(Request $request, $id)
     {
         $consults = Consults::findOrFail($id);
-
         $consults->update($request->all());
 
+        RekamMedis::create([
+            'id_konsultasi' => $id,
+        ]);
         return ResponseFormatter::success($consults, 'Transaksi berhasil diperbarui');
     }
 

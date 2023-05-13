@@ -17,7 +17,8 @@ class TransactionController extends Controller
 {
     public function getDataAllTransaksi(Request $request)
     {
-        $transaction = Transaction::with(['dokter', 'pasien'])->where('id_pasien', Auth::user()->id_pasien);
+        $transaction = Transaction::with(['dokter', 'pasien'])->where('id_pasien', Auth::user()->id_pasien)
+        ->orderBy('created_at', 'DESC');
         return ResponseFormatter::success(
             $transaction->get(),
             'Data list transaksi berhasil diambil'

@@ -40,12 +40,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('transaction/{id}', [TransactionController::class, 'updateTransaksi']);
 
 
-    Route::get('consults', [ConsultController::class, 'consultasiPasien']);
-    Route::get('consults/dokter', [ConsultController::class, 'consultasiDokter']);
-    Route::post('consults/update/{id}', [ConsultController::class, 'update']);
-
-   
-   
+    Route::get('consults', [ConsultController::class, 'getConsultasiPasien']);
+    Route::get('consults/dokter', [ConsultController::class, 'getConsultasiDokter']);
+    Route::get('rekam-medis', [ConsultController::class, 'getRekamMedis']);
+    Route::post('consults/update/{id}', [ConsultController::class, 'updateKonsultasi']);
 });
 Route::post('login', [PasienController::class, 'loginPasien']);
 Route::post('register', [PasienController::class, 'registerPasien']);
